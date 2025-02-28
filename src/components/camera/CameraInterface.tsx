@@ -18,6 +18,7 @@ export function CameraInterface({ onCapture }: CameraInterfaceProps) {
   useEffect(() => {
     let mounted = true;
     let currentStream: MediaStream | null = null;
+    const currentVideoRef = videoRef.current;
     
     // Access the device camera
     const startCamera = async () => {
@@ -64,7 +65,7 @@ export function CameraInterface({ onCapture }: CameraInterfaceProps) {
         console.error("Error accessing camera:", err);
         if (mounted) {
           setError(
-            "Camera access denied. Please grant camera permissions by clicking the camera icon in your browser's address bar and refreshing the page."
+            "Camera access denied. Please grant camera permissions by clicking the camera icon in your browser&apos;s address bar and refreshing the page."
           );
         }
       }
@@ -90,11 +91,11 @@ export function CameraInterface({ onCapture }: CameraInterfaceProps) {
       }
       
       // Also clear the video source
-      if (videoRef.current && videoRef.current.srcObject) {
-        videoRef.current.srcObject = null;
+      if (currentVideoRef && currentVideoRef.srcObject) {
+        currentVideoRef.srcObject = null;
       }
     };
-  }, []); // Keep empty dependency array to prevent re-initialization
+  }, [stream]); // Add stream as a dependency
 
   const captureImage = () => {
     if (videoRef.current && canvasRef.current) {
@@ -133,8 +134,8 @@ export function CameraInterface({ onCapture }: CameraInterfaceProps) {
           <div className="mt-4">
             <p className="font-bold">How to enable camera access:</p>
             <ol className="list-decimal pl-5 mt-2 space-y-1">
-              <li>Look for the camera icon in your browser's address bar</li>
-              <li>Click it and select "Allow" for camera access</li>
+              <li>Look for the camera icon in your browser&apos;s address bar</li>
+              <li>Click it and select &quot;Allow&quot; for camera access</li>
               <li>Refresh this page</li>
             </ol>
           </div>

@@ -1,17 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { IntakeForm } from "@/components/form/IntakeForm";
 import { useFormStore } from "@/store/formStore";
 import { useRouter } from "next/navigation";
 import { FormActions } from "@/components/ui/FormActions";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { QRCode } from "@/components/ui/QRCode";
-import { SkeletonLoader } from "@/components/ui/SkeletonLoader";
 import { usePolling } from "@/lib/usePolling";
 
 export default function NewFormPage() {
-  const { createNewForm, currentForm, clearCurrentForm, isWaitingForPhoto } = useFormStore();
+  const { createNewForm, currentForm, clearCurrentForm } = useFormStore();
   
   useEffect(() => {
     // Always clear the current form when navigating to the new form page
@@ -24,7 +23,7 @@ export default function NewFormPage() {
   const hasUnsavedChanges = useFormStore((state) => state.hasUnsavedChanges);
   
   // Start polling automatically
-  const { isPolling, hasReceived } = usePolling(true);
+  const { hasReceived } = usePolling(true);
 
   return (
     <div>

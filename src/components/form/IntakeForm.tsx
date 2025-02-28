@@ -1,39 +1,26 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { FormField } from "@/components/ui/FormField";
-import { FormActions } from "@/components/ui/FormActions";
 import { ImageViewer } from "@/components/ui/ImageViewer";
 import { CopyButton } from "@/components/ui/CopyButton";
-import { SkeletonLoader, SkeletonField, SkeletonImage } from "@/components/ui/SkeletonLoader";
+import { SkeletonLoader, SkeletonImage } from "@/components/ui/SkeletonLoader";
 import { useFormStore } from "@/store/formStore";
 import { Image } from "lucide-react";
-
-interface ServiceRequest {
-  area?: string;
-  description?: string;
-}
+import NextImage from "next/image";
 
 export function IntakeForm() {
   const { 
     currentForm, 
-    hasUnsavedChanges, 
     updateForm, 
-    saveForm, 
-    clearCurrentForm,
-    deleteForm,
-    createNewForm,
-    setCurrentForm,
     isProcessing,
     processingStep
   } = useFormStore();
   
   const [isImageViewerOpen, setIsImageViewerOpen] = useState(false);
 
-  const isNewForm = currentForm ? !useFormStore.getState().forms.some(f => f.id === currentForm.id) : false;
 
-  const handleUpdateField = (field: string, value: any) => {
+  const handleUpdateField = (field: string, value: string | string[] | boolean) => {
     if (!currentForm) return;
     updateForm({ [field]: value });
   };
@@ -69,41 +56,7 @@ export function IntakeForm() {
     updateForm({ serviceRequests: updatedRequests });
   };
 
-  const router = useRouter();
 
-  const handleSave = () => {
-    // Set default date to today if it's not already set
-    if (currentForm && !currentForm.signatureDate) {
-      const today = new Date().toISOString().split('T')[0];
-      handleUpdateField("signatureDate", today);
-    }
-    
-    saveForm();
-    
-    // If this is a new form being saved, redirect to the form's detail page
-    if (isNewForm && currentForm) {
-      router.push(`/forms/${currentForm.id}`);
-    }
-  };
-
-  const handleDiscard = () => {
-    // If this is a new form, we need to recreate it
-    if (isNewForm) {
-      clearCurrentForm();
-      createNewForm();
-    } else if (currentForm) {
-      // For existing forms, reload the original form data
-      setCurrentForm(currentForm.id);
-    }
-  };
-
-  const handleDelete = () => {
-    if (currentForm) {
-      deleteForm(currentForm.id);
-      // Navigate back to forms list after deletion
-      router.push('/forms');
-    }
-  };
 
   if (!currentForm) {
     return <div>No form selected</div>;
@@ -139,7 +92,7 @@ export function IntakeForm() {
                 onClick={() => setIsImageViewerOpen(true)}
                 className="flex items-center gap-2 text-blue-600 hover:text-blue-800 cursor-pointer"
               >
-                <Image className="h-4 w-4" />
+                <Image className="h-4 w-4" aria-hidden="true" />
                 <span>View Full Image</span>
               </button>
             </div>
@@ -147,12 +100,17 @@ export function IntakeForm() {
               <SkeletonImage />
             ) : (
               <div className="flex justify-center border rounded-md overflow-hidden bg-gray-100">
-                <img 
-                  src={currentForm.capturedImage} 
-                  alt="Captured form" 
-                  className="max-h-40 object-contain cursor-pointer"
-                  onClick={() => setIsImageViewerOpen(true)}
-                />
+                <div className="relative h-40 w-full">
+                  {currentForm.capturedImage && (
+                    <NextImage 
+                      src={currentForm.capturedImage}
+                      alt="Captured form image"
+                      fill
+                      className="object-contain cursor-pointer"
+                      onClick={() => setIsImageViewerOpen(true)}
+                    />
+                  )}
+                </div>
               </div>
             )}
           </div>
@@ -375,7 +333,7 @@ export function IntakeForm() {
             Repair Authorization & Vehicle Depositary Receipt (AB 409 AMENDING CIVIL CODE)
           </h2>
           <p className="text-sm mb-4">
-            I hereby authorize the work to be done along with the necessary materials. You and your employees may operate vehicles for purposes of testing, inspection, or delivery at my risk. An express mechanic's lien is acknowledged on vehicles to secure the amount of repairs thereto. In the event legal action is necessary to enforce this contract, I will pay reasonable attorney's fees and court costs. I acknowledge this deposited property is not insured or protected to the amount of actual cash value thereof by the dealer against loss occasioned by theft, fire, and vandalism while such property remains within the depositary. I also acknowledge no articles of personal property remain with the depositary. I also acknowledge no articles of personal property have been left in the vehicle and the dealer is not responsible for inspection. Signing puts signee in agreement with Professional Automotive Service policies.
+            I hereby authorize the work to be done along with the necessary materials. You and your employees may operate vehicles for purposes of testing, inspection, or delivery at my risk. An express mechanic&apos;s lien is acknowledged on vehicles to secure the amount of repairs thereto. In the event legal action is necessary to enforce this contract, I will pay reasonable attorney&apos;s fees and court costs. I acknowledge this deposited property is not insured or protected to the amount of actual cash value thereof by the dealer against loss occasioned by theft, fire, and vandalism while such property remains within the depositary. I also acknowledge no articles of personal property remain with the depositary. I also acknowledge no articles of personal property have been left in the vehicle and the dealer is not responsible for inspection. Signing puts signee in agreement with Professional Automotive Service policies.
           </p>
         </div>
 

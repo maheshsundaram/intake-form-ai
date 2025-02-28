@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { useFormStore } from "@/store/formStore";
-import { submitMockData } from "@/lib/mockSubmission";
 
 export function usePolling(enabled: boolean = false) {
   const [isPolling, setIsPolling] = useState(false);

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { X, ZoomIn, ZoomOut } from "lucide-react";
+import Image from "next/image";
 
 interface ImageViewerProps {
   imageUrl: string;
@@ -60,12 +61,15 @@ export function ImageViewer({ imageUrl, isOpen, onClose }: ImageViewerProps) {
         
         {/* Image container with overflow for large images */}
         <div className="w-full h-full overflow-auto flex items-center justify-center">
-          <img 
-            src={imageUrl} 
-            alt="Form image" 
-            className="max-w-full max-h-full object-contain transition-transform duration-200"
-            style={{ transform: `scale(${scale})` }}
-          />
+          <div className="relative w-full h-full">
+            <Image 
+              src={imageUrl}
+              alt="Form image"
+              fill
+              className="object-contain transition-transform duration-200"
+              style={{ transform: `scale(${scale})` }}
+            />
+          </div>
         </div>
       </div>
     </div>

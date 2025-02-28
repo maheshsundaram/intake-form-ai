@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { Button } from "@/components/ui/button";
-import { useFormStore } from "@/store/formStore";
 import { submitMockData } from "@/lib/mockSubmission";
+import Image from "next/image";
 
 export default function PreviewPage() {
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
@@ -79,11 +79,16 @@ export default function PreviewPage() {
         {capturedImage ? (
           <div className="flex flex-col items-center">
             <div className="bg-white p-2 rounded-md shadow-md mb-6 max-w-md">
-              <img 
-                src={capturedImage} 
-                alt="Captured form" 
-                className="w-full h-auto rounded"
-              />
+              <div className="relative w-full h-64">
+                {capturedImage && (
+                  <Image 
+                    src={capturedImage}
+                    alt="Captured form"
+                    fill
+                    className="object-contain rounded"
+                  />
+                )}
+              </div>
             </div>
             
             <div className="flex gap-4">

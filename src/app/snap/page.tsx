@@ -17,7 +17,7 @@ export default function CameraPage() {
     };
   }, []);
   
-  const handleCapture = (imageData: string) => {
+  const handleCapture = () => {
     // The CameraInterface component will handle navigation to the preview page
     // This function is here for any additional processing if needed
     console.log("Image captured");

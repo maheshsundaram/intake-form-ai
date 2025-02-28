@@ -1,7 +1,34 @@
 import { NextResponse } from 'next/server';
 
+// Define a type for submissions
+interface Submission {
+  timestamp: string;
+  capturedImage?: string;
+  customerName?: string;
+  email?: string;
+  cellPhone?: string;
+  address?: string;
+  homePhone?: string;
+  vehicleYear?: string;
+  vehicleMake?: string;
+  vehicleModel?: string;
+  vehicleColor?: string;
+  licensePlate?: string;
+  mileage?: string;
+  warranty?: string;
+  warrantyProvider?: string;
+  knownIssues?: string;
+  signature?: string;
+  signatureDate?: string;
+  serviceRequests?: Array<{
+    area?: string;
+    description?: string;
+  }>;
+  [key: string]: unknown;
+}
+
 // In-memory storage for submissions (in a real app, this would be a database)
-let pendingSubmissions: any[] = [];
+const pendingSubmissions: Submission[] = [];
 
 export async function GET() {
   // Return all pending submissions

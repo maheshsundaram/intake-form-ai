@@ -35,9 +35,6 @@ export default function FormDetailPage({ params }: { params: Promise<{ id: strin
     ? new Date(currentForm.signatureDate).toLocaleDateString('en-US') 
     : "No date";
   
-  // Check if form has an image
-  const hasImage = currentForm?.capturedImage ? true : false;
-  
   return (
     <div>
       <Breadcrumb 
