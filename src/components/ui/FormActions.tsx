@@ -41,7 +41,7 @@ export function FormActions({
         </Button>
       )}
       
-      {!hideDiscard && !isNew && (
+      {!hideDiscard && (
         <Button
           type="button"
           variant="outline"
@@ -49,7 +49,7 @@ export function FormActions({
           disabled={!hasChanges}
           className="cursor-pointer"
         >
-          Discard Changes
+          Discard{" "}{isNew ? "Form" : "Changes"}
         </Button>
       )}
       

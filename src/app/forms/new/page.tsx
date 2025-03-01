@@ -22,8 +22,18 @@ export default function NewFormPage() {
   const router = useRouter();
   const hasUnsavedChanges = useFormStore((state) => state.hasUnsavedChanges);
   
-  // Start polling automatically
-  const { hasReceived } = usePolling(true);
+  // Start polling automatically and get reset function
+  const { hasReceived, resetPolling } = usePolling(true);
+  
+  // Check for lastSubmissionId in localStorage on mount
+  useEffect(() => {
+    const lastSubmissionId = localStorage.getItem("lastSubmissionId");
+    if (lastSubmissionId) {
+      console.log("Found lastSubmissionId in localStorage:", lastSubmissionId);
+      // If we have a submission ID, we should start polling for it
+      resetPolling(); // Reset polling to pick up the stored ID
+    }
+  }, [resetPolling]);
 
   return (
     <div>
@@ -33,41 +43,36 @@ export default function NewFormPage() {
           { label: "New Form", href: "/forms/new" }
         ]}
       >
-        {hasReceived && (
-          <FormActions
-            isNew={true}
-            hasChanges={hasUnsavedChanges}
-            onSave={() => {
-              // Set default date to today if it's not already set
-              if (currentForm && !currentForm.signatureDate) {
-                const today = new Date().toISOString().split('T')[0];
-                useFormStore.getState().updateForm({ signatureDate: today });
-              }
-              
-              useFormStore.getState().saveForm();
-              
-              // Redirect to the form's detail page
-              if (currentForm) {
-                router.push(`/forms/${currentForm.id}`);
-              }
-            }}
-            onDiscard={() => {
-              // Just revert changes, don't navigate away
-              if (currentForm) {
-                // For a new form, recreate it
-                clearCurrentForm();
-                createNewForm();
-              }
-            }}
-            hideDiscard={true}
-          />
-        )}
+        <FormActions
+          isNew={true}
+          hasChanges={hasUnsavedChanges}
+          onSave={() => {
+            // Set default date to today if it's not already set
+            if (currentForm && !currentForm.signatureDate) {
+              const today = new Date().toISOString();
+              useFormStore.getState().updateForm({ signatureDate: today });
+            }
+            
+            useFormStore.getState().saveForm();
+            
+            // Redirect to the form's detail page
+            if (currentForm) {
+              router.push(`/forms/${currentForm.id}`);
+            }
+          }}
+          onDiscard={() => {
+            // Clear the form and redirect to forms list
+            clearCurrentForm();
+            router.push('/forms');
+          }}
+          hideDiscard={false}
+        />
       </Breadcrumb>
       
-      {!hasReceived ? (
+      {!hasReceived && currentForm ? (
         <div className="bg-blue-50 p-6 mb-6 rounded-lg">
           <div className="flex flex-col md:flex-row items-center gap-8">
-            <QRCode url={`${window.location.origin}/snap`} />
+            <QRCode url={`https://${window.location.origin.includes("localhost") ? process.env.NEXT_PUBLIC_HOSTNAME : window.location.origin}/snap`} />
             <div className="flex-1">
               <h2 className="text-xl font-bold mb-4">Scan QR Code to Take a Photo</h2>
               <p className="mb-4">

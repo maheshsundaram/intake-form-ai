@@ -5,7 +5,7 @@ import { ClipboardList, Camera } from "lucide-react";
 
 export default function Home() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gradient-to-br from-blue-50 via-white to-blue-100">
+    <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gradient-to-br from-blue-100 via-blue-200 to-blue-300">
       <div className="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none"></div>
       
       <div className="relative z-10 flex flex-col items-center">

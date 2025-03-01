@@ -24,6 +24,23 @@ export function FormField({
   className = "",
   isLoading = false,
 }: FormFieldProps) {
+  // For date inputs, we need to convert ISO date strings to YYYY-MM-DD format
+  let displayValue = value;
+  if (type === "date" && value && typeof value === 'string' && value.includes('T')) {
+    try {
+      // Parse the ISO date string
+      const date = new Date(value);
+      
+      // Format as YYYY-MM-DD using the date in local timezone
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      
+      displayValue = `${year}-${month}-${day}`;
+    } catch (e) {
+      console.error("Error formatting date:", e);
+    }
+  }
   return (
     <div className={`relative ${className}`}>
       <label className="block">
@@ -39,7 +56,7 @@ export function FormField({
           <div className="flex mt-1">
             <input
               type={type}
-              value={value || ""}
+              value={displayValue || ""}
               onChange={(e) => onChange(e.target.value)}
               className="block w-full border-gray-300 border p-2 rounded-l-md"
             />
