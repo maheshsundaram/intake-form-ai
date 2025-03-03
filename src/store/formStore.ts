@@ -39,7 +39,7 @@ interface FormState {
   processingStep: ProcessingStep;
   
   // Actions
-  createNewForm: () => void;
+  createNewForm: () => string;
   updateForm: (data: Partial<FormData>) => void;
   saveForm: () => void;
   deleteForm: (id: string) => void;

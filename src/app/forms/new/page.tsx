@@ -9,6 +9,14 @@ import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { QRCode } from "@/components/ui/QRCode";
 import { usePolling } from "@/lib/usePolling";
 
+const buildQRUrl = (id: string) => {
+  let host = window.location.host;
+  if (window.location.hostname === "localhost") {
+    host = process.env.NEXT_PUBLIC_HOSTNAME as string;
+  }
+  return `https://${host}/snap?formId=${encodeURIComponent(id)}`;
+}
+
 export default function NewFormPage() {
   const { createNewForm, currentForm, clearCurrentForm } = useFormStore();
   
@@ -72,7 +80,7 @@ export default function NewFormPage() {
       {!hasReceived && currentForm ? (
         <div className="bg-blue-50 p-6 mb-6 rounded-lg">
           <div className="flex flex-col md:flex-row items-center gap-8">
-            <QRCode url={`https://${window.location.origin.includes("localhost") ? process.env.NEXT_PUBLIC_HOSTNAME : window.location.origin}/snap`} />
+            <QRCode url={buildQRUrl(currentForm.id)} />
             <div className="flex-1">
               <h2 className="text-xl font-bold mb-4">Scan QR Code to Take a Photo</h2>
               <p className="mb-4">
