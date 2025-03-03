@@ -350,7 +350,27 @@ export function IntakeForm() {
           <FormField
             label="Date:"
             value={currentForm.signatureDate || ""}
-            onChange={(value) => handleUpdateField("signatureDate", value)}
+            onChange={(value) => {
+              // When user changes the date, convert it to ISO format
+              if (value) {
+                try {
+                  // Parse the date from YYYY-MM-DD format
+                  const [year, month, day] = value.split('-').map(Number);
+                  
+                  // Create date at noon UTC to avoid timezone issues
+                  const date = new Date(Date.UTC(year, month - 1, day, 12, 0, 0));
+                  
+                  if (!isNaN(date.getTime())) {
+                    handleUpdateField("signatureDate", date.toISOString());
+                    return;
+                  }
+                } catch (e) {
+                  console.error("Error parsing date:", e);
+                }
+              }
+              // Fallback to storing the raw value
+              handleUpdateField("signatureDate", value);
+            }}
             type="date"
             highlighted={true}
             className="col-span-1"

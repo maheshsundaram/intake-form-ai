@@ -32,7 +32,11 @@ export default function FormDetailPage({ params }: { params: Promise<{ id: strin
   // Get customer name and date for breadcrumb
   const customerName = currentForm?.customerName || "Unnamed Customer";
   const formDate = currentForm?.signatureDate 
-    ? new Date(currentForm.signatureDate).toLocaleDateString('en-US') 
+    ? new Date(currentForm.signatureDate).toLocaleDateString(undefined, {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric'
+      }) 
     : "No date";
   
   return (
